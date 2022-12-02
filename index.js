@@ -1,6 +1,7 @@
 // TODO: Include packages needed for this application
 const inquirer = require ("inquirer");
 const fs = require("fs");
+import generateMarkdown from "./utils/generateMarkdown";
 // TODO: Create an array of questions for user input
 const questions = [
     {
@@ -27,7 +28,7 @@ const questions = [
         type: "list",
         name: "license",
         message: "Please select a license",
-        choices: [/*License stuff goes here*/],
+        choices: ["MIT", "APACHE 2.0", "ISC", "None"],
     },
     {
         type: "input",
@@ -58,10 +59,10 @@ function writeToFile(fileName, data) {
         );
 }
 const generatePage =({/*list of variables*/}) =>
-`#${title}
-
+`#${answers.title}
+<img src="https://img.shields.io/badge/License-${answers.license}-yellow.svg">
 ##Description
-${description}
+${answers.description}
 
 ##Table of Contents
 -[Installation](#installation)
@@ -72,30 +73,30 @@ ${description}
 -[Questions](#questions)
 
 ##Installation
-${installation}
+${answers.installation}
 
 ##Usage
-${usage}
+${answers.usage}
 
 ##License
-License stuff goes here
+${renderLicenseSection(answers.license)}
 
 ##Contributing
-${contributing}
+${answers.contributing}
 
 ##Tests
-${tests}
+${answers.tests}
 
 ##Questions
-[My GitHub profile](https://github.com/${username})
-To reach me for further questions, contact me at ${email}`;
+[My GitHub profile](https://github.com/${answers.username})
+To reach me for further questions, contact me on Github or e-mail me at ${answers.email}`;
 
 // TODO: Create a function to initialize app
 function init() {
     inquirer
         .prompt(questions)
         .then((answers) => {
-            const readmePageContent = generatePage(answers);
+            const readmePageContent = generateMarkdown(answers);
             writeToFile("generatedReadme.md", readmePageContent);
         });
 }
